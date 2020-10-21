@@ -3,16 +3,17 @@ package com.ieseljust.ad.figures;
 // Llibreríes per a poder dibuixar 
 import java.io.Serializable;
 import javafx.scene.canvas.GraphicsContext;
-import org.json.JSONObject;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
 
-abstract class Figura {
+abstract class Figura implements Serializable {
     /* Aquesta classe serà una classe abstracta (amb mètodes abstractes)
        a partir de la qual extendrem la resta de classes de figures geomètriques.
     */
 
-    // La posició i el color seran atributs comuns a totes les figures
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = -8635764349516676231L;
+	// La posició i el color seran atributs comuns a totes les figures
     protected Punt posicio;
     protected String color;
 

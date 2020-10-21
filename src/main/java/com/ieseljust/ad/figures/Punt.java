@@ -4,7 +4,11 @@ import java.io.Serializable;
 
 
 class Punt implements Serializable {
-    // Classe que representa una ubicació a l'escena
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = -4968424781770969291L;
+	// Classe que representa una ubicació a l'escena
     private int x;
     private int y;
 
