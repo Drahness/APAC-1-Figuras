@@ -2,9 +2,14 @@ package com.ieseljust.ad.figures;
 
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.OutputStream;
 
 class FileManager {
 
@@ -20,7 +25,6 @@ class FileManager {
         } catch (NumberFormatException | NullPointerException e) {
             return false;
         }
-        // only got here if we didn't return false
         return true;
     }
 
@@ -39,7 +43,8 @@ class FileManager {
     		BufferedReader bf = new BufferedReader(fr);
     		String[] currentLine; 
     		try {
-				while(fr.ready()) {
+				while(bf.ready()) {
+					System.out.println("ready!");
 					currentLine = bf.readLine().split(" ");
 					if(currentLine[0].equalsIgnoreCase("dimensions")) {
 						int x ,y;
@@ -70,16 +75,22 @@ class FileManager {
     }
 
     public Escena importFromObj(String file) {
-
-        /**
-         * **********************************************************************
-         * TODO: Mètode a implementar: * Llegirà el fitxer indicat, en format
-         * d'objectes seriats, i importa * la llista de figures. *
-         * **********************************************************************
-         */
-        // Comentar o elimina aquestes línies quan implementeu el mètode
-        Escena escena = null;
-
+    	Escena escena = null;
+    	try {
+    		FileInputStream fis = new FileInputStream(new File(file));
+			ObjectInputStream ois = new ObjectInputStream(fis);
+			escena = (Escena) ois.readObject();
+			
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (ClassNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
         return escena;
 
     }
@@ -154,7 +165,7 @@ class FileManager {
     }
     /**
      * Para esto yo haria una factoria. Porque no me gusta hacer copyPaste del main
-     * @param comandament
+     * @param components
      * @return
      */
     private Figura createFigura(String[] components) {

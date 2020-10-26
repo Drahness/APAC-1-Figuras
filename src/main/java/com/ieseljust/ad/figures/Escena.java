@@ -8,7 +8,7 @@ import java.util.List;
 // Llibreríes per a poder dibuixar 
 import javafx.scene.canvas.GraphicsContext;
 
-class Escena implements Serializable{
+class Escena implements Serializable {
     // L'escena tindrà unes dimensions.
     // Aquesta valor ens determinaran el marc per dibuixar posteriorment.
     private int tamX;
