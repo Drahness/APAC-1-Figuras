@@ -3,7 +3,7 @@ package com.ieseljust.ad.figures;
 import java.io.Serializable;
 
 
-class Punt implements Serializable {
+class Punt implements Serializable{
     /**
 	 * 
 	 */
@@ -37,6 +37,9 @@ class Punt implements Serializable {
         this.x=x;
         this.y=y;
     };
-
+    
+    public String toString() {
+    	return x+" "+y;
+    }
 }
 

@@ -9,18 +9,12 @@ import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
-import javafx.scene.paint.Color;
-import javafx.scene.shape.ArcType;
 import javafx.stage.Stage;
-
-import java.io.IOError;
-// Imports per a gestió de llistes
-import java.util.ArrayList;
-import java.util.List;
  
 
 //public class App extends Application{
     public class App extends Application{
+    	
     /* La nostra classe App principal és una
     subclasse de Application, per disposar de
     tot el context gràfic que  aquesta oferix*/
@@ -34,7 +28,6 @@ import java.util.List;
     
  
     public static void main(String[] args) {
-        
         
         
         Scanner keyboard = new Scanner(System.in);
@@ -271,6 +264,7 @@ import java.util.List;
 
             
         } while(!figura.equals("quit"));
+        keyboard.close();
         System.exit(0);
     }
 

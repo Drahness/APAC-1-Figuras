@@ -5,11 +5,20 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+
 // Llibreríes per a poder dibuixar 
 import javafx.scene.canvas.GraphicsContext;
 
 class Escena implements Serializable {
-    // L'escena tindrà unes dimensions.
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = 2424167380052738927L;
+	// L'escena tindrà unes dimensions.
     // Aquesta valor ens determinaran el marc per dibuixar posteriorment.
     private int tamX;
     private int tamY;
@@ -114,7 +123,28 @@ class Escena implements Serializable {
         // gc.fillText("text", 100, 100);
 
         
-    };
+    }
+    /**
+     * The element Appended
+     * @param doc
+     * @return
+     */
+	public Element appendTo(Document doc) {
+		Element root = doc.createElement(TAGS.ROOT_XML);
+		root.setAttribute(TAGS.WIDTH, String.valueOf(this.tamX));
+		root.setAttribute(TAGS.HEIGHT, String.valueOf(this.tamY));
+		doc.appendChild(root);
+		return root;
+	};
+	
+	public JSONObject appendTo(JSONObject json) {
+		JSONObject j = new JSONObject()
+				.put(TAGS.HEIGHT, this.tamY)
+				.put(TAGS.WIDTH, this.tamX)
+				.put(TAGS.FIGURAS, new JSONArray());
+		json.put("escena", j);
+		return j;
+	}
 
     
 }

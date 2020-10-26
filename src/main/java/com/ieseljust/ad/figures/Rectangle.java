@@ -1,18 +1,21 @@
 package com.ieseljust.ad.figures;
 
 // Llibreríes per a poder dibuixar 
-import java.io.Serializable;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
-import org.json.JSONObject;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
+
+import java.util.HashMap;
+import java.util.Map;
 
 // Definim la classe rectangle a partir de la classe figura
 // Heretarem per tant, la posició i el color
 class Rectangle extends Figura  {
-
-    // Té un nou atribut que serà el radi
+	public static String ROOT = "rect"; 
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = -711029877918114172L;
+	// Té un nou atribut que serà el radi
     private Integer llarg;
     private Integer alt;
 
@@ -46,6 +49,32 @@ class Rectangle extends Figura  {
         gc.fillRect(this.posicio.getX(), this.posicio.getY(), this.llarg, this.alt);
         //gc.fillOval(this.posicio.getX(), this.posicio.getY(), this.radi*2, this.radi*2);
     }
+    
+    public String toString() {
+    	return new StringBuilder()
+    		.append("rectangle").append(' ')
+    		.append(posicio).append(' ')
+    		.append(llarg).append(' ')
+    		.append(alt).append(' ')
+    		.append(color).append('\n').toString();
+    }
 
+	@Override
+	public Map<String, String> getMap() {
+		Map<String, String> map = new HashMap<>();
+		map.put(TAGS.X, String.valueOf(posicio.getX()));
+		map.put(TAGS.Y, String.valueOf(posicio.getY()));
+		map.put(TAGS.FILL, color);
+		map.put(TAGS.HEIGHT, String.valueOf(alt));
+		map.put(TAGS.STROKE, color);
+		map.put(TAGS.STROKE_WIDTH, "4");
+		map.put(TAGS.WIDTH, String.valueOf(llarg));
+		return map;
+	}
+
+	@Override
+	public String getRoot() {
+		return ROOT;
+	}
     
 }

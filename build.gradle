@@ -29,7 +29,7 @@ dependencies {
 
 
 
-
+/*
 compileJava {
     doFirst {
         options.compilerArgs = [
@@ -49,6 +49,6 @@ run {
         ]
     }
 }
-
+*/
 // Executarem amb: gradle run --console plain
 mainClassName = 'com.ieseljust.ad.figures.App'

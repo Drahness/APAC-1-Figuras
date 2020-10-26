@@ -8,7 +8,6 @@ Font: https://examples.javacodegeeks.com/core-java/util/regex/matcher/how-to-val
 
 */
 
-import java.io.Serializable;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 

@@ -2,17 +2,21 @@ package com.ieseljust.ad.figures;
 
 // Llibreríes per a poder dibuixar 
 import java.io.Serializable;
+import java.util.HashMap;
+import java.util.Map;
+
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
-import org.json.JSONObject;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
 
 // Definim la classe cercle a partir de la classe figura
 // Heretarem per tant, la posició i el color
 class Cercle extends Figura implements Serializable {
-
-    // Té un nou atribut que serà el radi
+	public static final String ROOT = "circle";
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = 7773860790286572835L;
+	// Té un nou atribut que serà el radi
     private Integer radi;
 
     // Constructors
@@ -48,5 +52,28 @@ class Cercle extends Figura implements Serializable {
         gc.fillOval(this.posicio.getX(), this.posicio.getY(), this.radi * 2, this.radi * 2);
     }
 
-   
+    public String toString() {
+    	return new StringBuilder()
+    		.append("cercle").append(' ')
+    		.append(posicio).append(' ')
+    		.append(radi).append(' ')
+    		.append(color).append('\n').toString();
+    }
+
+	@Override
+	public Map<String, String> getMap() {
+		Map<String,String> map = new HashMap<>();
+		map.put(TAGS.CX, String.valueOf(posicio.getX() + radi ));
+		map.put(TAGS.CY, String.valueOf(posicio.getY() + radi ));
+		map.put(TAGS.FILL, color);
+		map.put(TAGS.STROKE, color);
+		map.put(TAGS.STROKE_WIDTH, "4");
+		map.put(TAGS.RADIO, String.valueOf(radi));
+		return map;
+	}
+
+	@Override
+	public String getRoot() {
+		return ROOT;
+	}
 }

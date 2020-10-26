@@ -6,10 +6,24 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.io.OutputStream;
+import java.util.List;
+
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.TransformerConfigurationException;
+import javax.xml.transform.TransformerException;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.TransformerFactoryConfigurationError;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
+
+import org.json.JSONObject;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 
 class FileManager {
 
@@ -18,15 +32,6 @@ class FileManager {
     }
 
     
-
-    private boolean validaInt(String s) {
-        try {
-            Integer.parseInt(s);
-        } catch (NumberFormatException | NullPointerException e) {
-            return false;
-        }
-        return true;
-    }
 
     public Boolean Exists(String file) {
     	File f = new File(file);
@@ -44,7 +49,6 @@ class FileManager {
     		String[] currentLine; 
     		try {
 				while(bf.ready()) {
-					System.out.println("ready!");
 					currentLine = bf.readLine().split(" ");
 					if(currentLine[0].equalsIgnoreCase("dimensions")) {
 						int x ,y;
@@ -65,6 +69,14 @@ class FileManager {
 				}
 			} catch (IOException e) {
 				System.out.println(String.format("\\u001B[31m Error leyendo el fichero %s\\u001B[0m",f.getName()));
+			} finally {
+				try {
+					bf.close();
+					fr.close();
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 			}
     		
 		} catch (FileNotFoundException e) {
@@ -74,21 +86,30 @@ class FileManager {
 
     }
 
+    /**
+     * Se te olvido a�adir el serial number de cada figura.
+     * @param file
+     * @return
+     */
     public Escena importFromObj(String file) {
     	Escena escena = null;
     	try {
     		FileInputStream fis = new FileInputStream(new File(file));
 			ObjectInputStream ois = new ObjectInputStream(fis);
 			escena = (Escena) ois.readObject();
-			
+			ois.close();
+			fis.close();
 		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
+			System.out.println(e.getLocalizedMessage()+"");
+			
 			e.printStackTrace();
 		} catch (ClassNotFoundException e) {
-			// TODO Auto-generated catch block
+			System.out.println(e.getLocalizedMessage()+"");
+			
 			e.printStackTrace();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
+			System.out.println(e.getLocalizedMessage()+"");
+			
 			e.printStackTrace();
 		}
         return escena;
@@ -96,75 +117,92 @@ class FileManager {
     }
 
     public Boolean exportText(Escena escena, String file) {
-
-        /**
-         * ************************************************
-         * TODO: Mètode a implementar: * exporta l'escena donada a un fitxer de
-         * text, * en format per poder ser importat posteriorment.*
-         * ************************************************
-         */
-        // Comentar o elimina aquestes línies quan implementeu el mètode
-        boolean out = false;
-
-        return out;
-
+    	try {
+    		List<Figura> figures = escena.LlistaFigures;
+			FileWriter fw = new FileWriter(new File(file));
+			StringBuilder b = new StringBuilder();
+			for (Figura figura : figures) {
+				b.append(figura);
+			}
+			fw.write(b.toString());
+			fw.close();
+			return true;
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+    	return false;
     }
 
     public Boolean exportObj(Escena escena, String file) {
-
-        /**
-         * **********************************************************
-         * TODO: Mètode a implementar: * exporta l'escena donada a un fitxer
-         * binari d'objectes, * per poder ser importat posteriorment. *
-         * **********************************************************
-         */
-        // Comentar o elimina aquestes línies quan implementeu el mètode
-        boolean out = false;
-
-        return out;
-
+		try {
+			FileOutputStream fos;
+			fos = new FileOutputStream(new File(file));
+	    	ObjectOutputStream oos = new ObjectOutputStream(fos);
+	    	oos.writeObject(escena);
+	    	oos.close();
+	    	fos.close();
+	    	return true;
+		} catch (FileNotFoundException e) {
+			
+			e.printStackTrace();
+		} catch (IOException e) {
+			
+			e.printStackTrace();
+		}
+        return false;
     }
 
+    /**
+     * Comprobado en https://www.rapidtables.com/web/tools/svg-viewer-editor.html con el archivo ADroid.txt
+     * @param escena
+     * @param file
+     * @return
+     */
     public Boolean exportSVG(Escena escena, String file) {
-        /**
-         * **********************************************************
-         * TODO: Mètode a implementar: * exporta l'escena donada a un fitxer
-         * SVG (format XML). * El fitxer s'haurà de poder obrir amb Inkscape. *
-         * **********************************************************
-         */
-        /*
-            <?xmlversion="1.0"encoding="UTF-8"standalone="no"?> 2 <svgheight="500"width="500">
-            <rect fill="#ccccee" height="480" width="480" x="10" y="10"/>
-            <circle cx="250" cy="250" fill="#aaaaaa" r="100"/>
-            <line stroke="#aaaaaa" stroke-width="3" x1="50" x2="450" y1="250" y2="250"/>
-            <line stroke="#aaaaaa" stroke-width="3" x1="50" x2="50" y1="50" y2="
-            450"/>
-            <line stroke="#aaaaaa" stroke-width="3" x1="450" x2="450" y1="40" y2= "450"/>
-            </svg>
-         */
-
-        // Comentar o elimina aquestes línies quan implementeu el mètode
-        boolean out = false;
-
-        return out;
-
+    	try {
+			Document doc = DocumentBuilderFactory.newInstance().newDocumentBuilder().newDocument();
+			Element root = escena.appendTo(doc);
+			for (Figura figura : escena.LlistaFigures) {
+				figura.appendTo(root);
+			}
+			DOMSource source = new DOMSource(doc);
+			StreamResult result = new StreamResult(file);
+			TransformerFactory.newInstance().newTransformer().transform(source, result);
+			return true;
+    	} catch (ParserConfigurationException e) {
+			e.printStackTrace();
+		} catch (TransformerConfigurationException e) {
+			e.printStackTrace();
+		} catch (TransformerException e) {
+			e.printStackTrace();
+		} catch (TransformerFactoryConfigurationError e) {
+			e.printStackTrace();
+		}
+    	return false;
     }
 
     public Boolean exportJSON(Escena escena, String filename) {
+    	try {
+	    	JSONObject root = new JSONObject();
+	        JSONObject escenaJSON = escena.appendTo(root);
+	        for (Figura figura : escena.LlistaFigures) {
+	        	JSONObject json = new JSONObject();
+				figura.appendTo(json);
+				escenaJSON.getJSONArray(TAGS.FIGURAS).put(json);
+			}
 
-        /**
-         * **********************************************
-         * TODO: Mètode a implementar: * exporta l'escena donada a un fitxer
-         * JSON. * **********************************************
-         */
-        // Comentar o elimina aquestes línies quan implementeu el mètode
-        boolean out = false;
-
-        return out;
+	        FileWriter fw = new FileWriter(filename);
+			fw.write(root.toString(4));
+			fw.close();
+			return true;
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+    	return false;
 
     }
     /**
-     * Para esto yo haria una factoria. Porque no me gusta hacer copyPaste del main
+     * Para esto yo haria una factoria. Porque no me gusta hacer copypaste del main
      * @param components
      * @return
      */

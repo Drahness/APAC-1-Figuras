@@ -1,18 +1,20 @@
 package com.ieseljust.ad.figures;
 
-// Llibreríes per a poder dibuixar 
-import java.io.Serializable;
+import java.util.HashMap;
+import java.util.Map;
+
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
-import org.json.JSONObject;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
 
 // Definim la classe Línia a partir de la classe figura
 // Heretarem per tant, la posició i el color
 class Linia extends Figura {
-
-    // Té un nou atribut que serà el radi
+	public static final String ROOT = "line";
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = 972629812689071296L;
+	// Té un nou atribut que serà el radi
     private Punt vector;
 
     // Constructors
@@ -43,5 +45,30 @@ class Linia extends Figura {
         gc.strokeLine(this.posicio.getX(), this.posicio.getY(), this.vector.getX(), this.vector.getY());
 
     }
+    public String toString() {
+    	return new StringBuilder()
+    		.append("linia").append(' ')
+    		.append(posicio).append(' ')
+    		.append(vector).append(' ')
+    		.append(color).append('\n').toString();
+    }
 
+	@Override
+	public Map<String, String> getMap() {
+		Map<String, String> map = new HashMap<>();
+		map.put(TAGS.X1, String.valueOf(posicio.getX()));
+		map.put(TAGS.Y1, String.valueOf(posicio.getY()));
+		map.put(TAGS.Y2, String.valueOf(vector.getY()));
+		map.put(TAGS.X2, String.valueOf(vector.getX()));
+		map.put(TAGS.FILL, color);
+		map.put(TAGS.STROKE, color);
+		map.put(TAGS.STROKE_WIDTH, "4");
+		return map;
+	}
+
+	@Override
+	public String getRoot() {
+		return ROOT;
+	}
+    
 }
